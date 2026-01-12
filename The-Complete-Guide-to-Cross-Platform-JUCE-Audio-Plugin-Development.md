@@ -1564,3 +1564,1002 @@ elseif(APPLE)  # macOS
     # Static linking - nothing to bundle
 endif()
 ```
+
+### 3.4 Error Handling Philosophy
+
+In a cross-platform environment, errors manifest differently. A missing file might crash on macOS but just return an error code on Windows.
+
+**The Philosophy:**
+1.  **Never crash the host:** Your plugin runs inside a DAW. If you crash, the user loses their work.
+2.  **Degrade gracefully:** If hardware graphics fail, fallback to software rendering.
+3.  **Log silently:** Write detailed logs to disk for debugging.
+4.  **Notify unobtrusively:** Show a small warning icon, not a modal dialog box, for non-critical errors.
+
+**Implementation Pattern:**
+
+```cpp
+// try-catch block in PluginProcessor? NO.
+// JUCE handles audio processing exceptions locally (mostly).
+// Instead, handle resource loading:
+
+void AnalogMorphV333AudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
+{
+    // ❌ Bad:
+    // auto* file = new File("user/presets.xml"); // Might throw/fail
+    
+    // ✅ Good:
+    auto result = presetManager.loadDatabase();
+    if (result.failed()) {
+        logger.logError("Failed to load presets: " + result.getErrorMessage());
+        // Plugin continues working, just without presets
+    }
+}
+```
+
+### 3.5 Build System Selection
+
+**Projucer**
+- **Pros:** Official JUCE tool, easy GUI, handles Xcode/VS projects automatically.
+- **Cons:** Hard to script for CI/CD, limited flexibility for complex dependencies (like OpenSSL).
+- **Verdict:** Good for prototyping, bad for complex cross-platform distribution.
+
+**CMake**
+- **Pros:** Industry standard, excellent dependency management (`FetchContent`), easy CI/CD integration.
+- **Cons:** STEEP learning curve, text-based configuration.
+- **Verdict:** **Required** for professional cross-platform distribution.
+
+**This book assumes CMake.**
+
+---
+
+# Part II: Platform-Specific Development
+
+---
+
+## Chapter 4: Linux Development 🐧
+
+Linux is often treated as a second-class citizen by major audio companies, but it offers the most transparent development environment. If you can make it work on Linux (where you have to understand every dependency), Windows and macOS become easier to understand.
+
+### 4.1 Linux Audio Plugin Ecosystem
+
+**Plugin Formats:**
+- **VST3:** The standard. 95% of Linux DAWs support it (Bitwig, Reaper, Ardour, Waveform).
+- **LV2:** The native open-source format. Good to have, but VST3 is the commercial standard.
+- **CLAP:** The new contender. gaining traction rapidly.
+
+**Recommended Target:** VST3 (Essentials) + CLAP (Future-proof) + LV2 (Bonus).
+
+### 4.2 Graphics Subsystem (X11, Wayland, OpenGL)
+
+This is the #1 source of headaches on Linux.
+
+**The Situation:**
+Linux is transitioning from X11 (legacy display server) to Wayland (modern secure protocol).
+- **X11:** Most JUCE plugins work fine here.
+- **Wayland:** JUCE has improved support, but plugins run *inside* DAWs, which might still be X11 (via XWayland).
+
+**OpenGL Context Issues:**
+On Linux, DAWs handle windowing differently. Opening a plugin editor window involves parenting an X11 window inside another application's window.
+- If your plugin uses OpenGL, it creates a GL context.
+- If the GPU driver is unstable (often true for NVIDIA on Linux), this can crash the DAW.
+
+**Best Practice:**
+Always allow users to disable OpenGL via a config file **before** the plugin GUI loads.
+
+```cpp
+// Check ~/.config/AnalogMorph/settings.xml
+if (settings.shouldUseOpenGL()) {
+    openGLContext.attachTo(*getEditor());
+}
+```
+
+### 4.3 System Dependencies & Package Management
+
+Unlike Windows/macOS, Linux relies on shared system libraries.
+
+**Common JUCE Dependencies (Debian/Ubuntu packages):**
+- `libasound2-dev` (ALSA)
+- `libjack-jackd2-dev` (JACK)
+- `ladspa-sdk`
+- `libcurl4-openssl-dev`
+- `libfreetype6-dev` (Fonts)
+- `libx11-dev` `libxcomposite-dev` `libxext-dev` `libxinerama-dev` `libxrandr-dev` `libxcursor-dev` (X11)
+- `mesa-common-dev` (OpenGL)
+- `freeglut3-dev`
+
+**The "glibc" Trap:**
+If you compile on Ubuntu 22.04 (glibc 2.35), your binary **will not run** on Ubuntu 20.04 (glibc 2.31) or Debian 11.
+Forward compatibility works; backward compatibility rarely does.
+
+**Strategy:**
+Always build on the **oldest supported distribution**.
+- **Action:** Set up your build environment (or CI runner) on Ubuntu 20.04 (LTS) or even 18.04.
+
+### 4.4 Audio Subsystem (ALSA, PulseAudio, JACK, PipeWire)
+
+- **ALSA:** Kernel level drivers. JUCE talks primarily to this.
+- **JACK:** Pro audio server. Low latency, flexible routing. Used by pro users.
+- **PulseAudio:** Consumer audio server. Often conflicts with JACK.
+- **PipeWire:** The modern replacement for JACK and PulseAudio.
+
+**Developer Note:**
+JUCE abstractions handle this well. Just ensure you test with **PipeWire**, as it is the default on modern distros (Fedora 34+, Ubuntu 22.10+).
+
+### 4.5 Linux System Diagnostics Implementation
+
+```cpp
+// Source/Diagnostics/Platform/SystemDiagnostics_Linux.cpp
+
+#include "../SystemDiagnostics.h"
+#include <sys/utsname.h>
+#include <fstream>
+
+SystemDiagnostics::SystemInfo SystemDiagnostics::getSystemInfo()
+{
+    SystemInfo info;
+    
+    // Get Kernel Info
+    struct utsname buffer;
+    if (uname(&buffer) == 0) {
+        info.osName = "Linux";
+        info.osVersion = buffer.release; // e.g., "5.15.0-generic"
+        info.architecture = buffer.machine; // "x86_64"
+    }
+
+    // Get Distro Info (Standard way)
+    std::ifstream osRelease("/etc/os-release");
+    std::string line;
+    while (std::getline(osRelease, line)) {
+        if (line.find("PRETTY_NAME=") == 0) {
+             // Extract "Ubuntu 22.04.1 LTS" from string
+             // ... parsing logic here
+             info.osName = parsedName; 
+        }
+    }
+    
+    // Check Graphics (X11 vs Wayland)
+    const char* sessionType = std::getenv("XDG_SESSION_TYPE");
+    info.graphicsAPI = (sessionType != nullptr) ? sessionType : "unknown";
+
+    return info;
+}
+```
+
+### 4.6 Distribution-Specific Considerations
+
+- **Ubuntu/Debian:** Use `.deb` packages. Standard locations: `/usr/lib/vst3`, `~/.vst3`.
+- **Arch/Manjaro:** Users expect an AUR package. You provide a `PKGBUILD` script that downloads your generic binary or builds from source.
+- **Fedora:** Use `.rpm`.
+
+### 4.7 Testing Matrix for Linux
+
+A comprehensive test plan for Linux release:
+
+1.  **Ubuntu LTS (Current):** e.g., 22.04. Standard GNOME desktop.
+2.  **Ubuntu LTS (Previous):** e.g., 20.04. Checks glibc compatibility.
+3.  **Fedora (Latest):** Checks PipeWire and newer kernel interactions.
+4.  **Graphics Check:**
+    *   NVIDIA Proprietary Drivers
+    *   Mesa (AMD/Intel) Drivers
+5.  **Scaling Check:** 100% vs 200% UI scaling (HiDPI handling on X11 is tricky).
+
+---
+
+## Chapter 5: Windows Development 🪟
+
+Windows is the largest market, but the most chaotic environment.
+
+### 5.1 Windows Audio Plugin Landscape
+
+**Formats:**
+- **VST3:** Dominant.
+- **AAX:** Required for Pro Tools users. (Requires Avid license/approval).
+- **Standalone:** Useful for testing without a DAW.
+
+### 5.2 The DirectX Dependency Challenge
+
+JUCE defaults to software rendering or Direct2D.
+However, if you do custom OpenGL rendering, Windows drivers can be tricky.
+
+More importantly, generic dependencies often assume DirectX runtimes are present.
+Fresh installations of Windows 10/11 usually have them, but "de-bloated" or "LTSC" versions might not.
+
+### 5.3 Visual C++ Runtime Hell
+
+This is the most common reason plugins fail to load.
+
+**The Problem:**
+You build with Visual Studio 2022. Your plugin links dynamically to the C++ standard library (`vcruntime140.dll` etc.).
+If the user hasn't installed the "Microsoft Visual C++ Redistributable 2015-2022", your plugin fails silently or the DAW shows "Error loading plugin".
+
+**Solutions:**
+
+1.  **Static Linking (Recommended for Indies):**
+    Tell Visual Studio to bury the runtime *inside* your DLL.
+    *   **Pros:** Zero external dependencies for C++. "It just works."
+    *   **Cons:** Plugin file size grows (approx +500KB to +1MB is trivial today).
+    *   **How:** In CMake:
+        ```cmake
+        set_property(TARGET ${PROJECT_NAME} PROPERTY
+            MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+        # Default is MultiThreadedDLL (dynamic)
+        ```
+    
+2.  **Installer Distribution:**
+    Pack the `vc_redist.x64.exe` installer inside your installer and run it silently.
+
+**Recommendation:** Just use **Static Linking**. The file size increase is negligible compared to the support cost of "Missing DLL" errors.
+
+### 5.4 DLL Dependency Management
+
+Use **Dependencies.exe** (modern rewrite of Dependency Walker) to check your built `.vst3` file.
+It creates a tree of all DLLs your plugin needs.
+
+**Must-Have Check:**
+Ensure you are NOT accidentally linking to:
+- Debug runtimes (`ucrtbased.dll`, `vcruntime140d.dll`) in Release builds.
+- Absolute paths on your dev machine (`C:\Users\Indra\Libs\...`).
+
+### 5.5 Windows System Diagnostics Implementation
+
+```cpp
+// Source/Diagnostics/Platform/SystemDiagnostics_Windows.cpp
+
+#include "../SystemDiagnostics.h"
+#include <windows.h>
+#include <versionhelpers.h>
+
+SystemDiagnostics::SystemInfo SystemDiagnostics::getSystemInfo()
+{
+    SystemInfo info;
+    info.osName = "Windows";
+    
+    // Getting exact Windows version is notoriously hard due to 
+    // manifest compatibility shims. 
+    // Use Registry reading for accuracy:
+    // HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion -> DisplayVersion
+    
+    HKEY hKey;
+    if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, 
+        "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", 
+        0, KEY_READ, &hKey) == ERROR_SUCCESS) 
+    {
+        char value[255];
+        DWORD bufferSize = 255;
+        if (RegQueryValueExA(hKey, "DisplayVersion", nullptr, nullptr, 
+            reinterpret_cast<LPBYTE>(&value), &bufferSize) == ERROR_SUCCESS) 
+        {
+            info.osVersion = value; // e.g., "22H2"
+        }
+        RegCloseKey(hKey);
+    }
+    
+    return info;
+}
+```
+
+### 5.6 Graphics Driver Issues
+
+Windows offers seemingly infinite GPU combinations.
+Common issue: **Intel Integrated Graphics**.
+Drivers are often years out of date on office laptops used for music.
+
+**Safety Net:**
+Implement a crash handler that detects if the *previous* run crashed during graphics initialization. If so, force Software Rendering mode on the next run.
+
+```cpp
+bool GraphicsGuard::didCrashLastTime() {
+    return File(getApplicationDataDirectory().getChildFile("crash_marker")).exists();
+}
+// Create marker on startup, delete on successful shutdown.
+```
+
+### 5.7 Windows Version Compatibility
+
+**Target:** Windows 10 (64-bit).
+Windows 7 is dead. Supporting it requires jumping through hurdles (older APIs, no modern C++ features). For an indie developer in 2026, dropping Windows 7/8 support is a valid business decision.
+
+---
+
+## Chapter 6: macOS Development 🍎
+
+The "walled garden" is lovely once you are inside, but getting past the gatekeeper is expensive and complex.
+
+### 6.1 macOS Plugin Ecosystem
+
+**Formats:**
+- **AU (Audio Unit):** The native format (Logic Pro, GarageBand). **Mandatory.**
+- **VST3:** For Cubase, Ableton Live, Studio One users on Mac.
+- **Standalone:** Testing.
+
+**Architecture:**
+You **must** ship Universal Binaries (x86_64 Intel + arm64 Apple Silicon) in the same bundle.
+CMake handles this easily:
+```cmake
+set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64")
+```
+
+### 6.2 Metal Graphics Subsystem
+
+JUCE mostly uses CoreGraphics (CPU) or OpenGL (Legacy) on macOS.
+However, new JUCE versions leverage **Metal** for rendering the UI.
+
+**Pros:** Extremely smooth UI on Retina displays.
+**Cons:** Older Macs (pre-2015) might struggle or show artifacts if Metal logic isn't perfect.
+
+### 6.3 System Dependencies (The Easy Part)
+
+macOS is monolithic. You rarely have "missing library" issues because system libraries (CoreAudio, CoreFoundation, Cocoa) are always there.
+Static linking (like with OpenSSL) is the standard approach for third-party libs.
+
+### 6.4 Code Signing Requirements (The Hard Part)
+
+If you distribute a plugin without signing it:
+1.  Logic Pro will refuse to load it.
+2.  macOS will tell the user the file is "damaged" or "from an unidentified developer".
+
+**Prerequisites:**
+1.  **Apple Developer Account:** $99/year.
+2.  **Certificate:** "Developer ID Application" certificate.
+
+**The Command:**
+```bash
+codesign --force --deep --options runtime --timestamp \
+  --sign "Developer ID Application: Your Name (TEAMID)" \
+  "Builds/MacOSX/build/Release/ANMO V333.vst3"
+```
+The `--options runtime` flag is critical. It enables the **Hardened Runtime**.
+
+### 6.5 Notarization Process
+
+Signing proves *who* you are. Notarization proves *the file is safe*.
+You upload your plugin (zipped) to Apple's servers. They scan it. If it passes, you "staple" the ticket to your file.
+
+**Manual Workflow:**
+1.  Zip the plugin.
+2.  `xcrun notarytool submit myplugin.zip --keychain-profile "MyNotaryProfile" --wait`
+3.  Receive "Approved" status.
+4.  `xcrun stapler staple "myplugin.vst3"`
+
+**Automation:**
+We will script this in **Chapter 14**.
+
+### 6.6 Hardened Runtime & Entitlements
+
+The Hardened Runtime locks down your plugin (no JIT compilation, no microphone access, etc.) unless you explicitly ask for it.
+
+**Entitlements.plist:**
+For an audio plugin, you usually need:
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- Allow JIT compilation (needed for DSP optimization sometimes) -->
+    <key>com.apple.security.cs.allow-jit</key>
+    <true/>
+    <!-- Allow loading unsigned libraries (if you messed up dependencies) -->
+    <key>com.apple.security.cs.disable-library-validation</key>
+    <true/>
+    <!-- Microphone access (for audio input) -->
+    <key>com.apple.security.device.audio-input</key>
+    <true/>
+</dict>
+</plist>
+```
+
+### 6.7 macOS System Diagnostics Implementation
+
+```cpp
+// Source/Diagnostics/Platform/SystemDiagnostics_Mac.mm
+
+#include "../SystemDiagnostics.h"
+#include <sys/sysctl.h>
+
+SystemDiagnostics::SystemInfo SystemDiagnostics::getSystemInfo()
+{
+    SystemInfo info;
+    info.osName = "macOS";
+    
+    // Get OS Version
+    // Use NSProcessInfo via Objective-C++
+    NSOperatingSystemVersion version = [[NSProcessInfo processInfo] operatingSystemVersion];
+    info.osVersion = String::formatted("%d.%d.%d", 
+        version.majorVersion, version.minorVersion, version.patchVersion);
+        
+    // Check Rosetta vs Native
+    int ret = 0;
+    size_t size = sizeof(ret);
+    if (sysctlbyname("sysctl.proc_translated", &ret, &size, NULL, 0) != -1) {
+        if (ret == 1) info.architecture = "x86_64 (Rosetta)";
+        else          info.architecture = "Native";
+    }
+    
+    return info;
+}
+```
+
+### 6.8 Apple Silicon vs Intel Considerations
+
+**Performance:**
+M1/M2 chips are beasts. DSP often runs 2-3x faster than on equivalent Intel Macs.
+However, ensure your **SIMD optimization flags** (NEON for ARM, SSE/AVX for Intel) are set correctly in CMake. JUCE typically handles this, but custom DSP code needs `#ifdef JUCE_ARM`.
+
+**Testing:**
+Always test your Universal Binary on:
+1.  An Intel Mac.
+2.  An Apple Silicon Mac (Native mode).
+3.  An Apple Silicon Mac (Rosetta mode - force the DAW to open in Rosetta).
+
+---
+
+# Part III: Cross-Platform Strategies
+
+---
+
+## Chapter 7: JUCE Framework Deep Dive
+
+## Chapter 7: JUCE Framework Deep Dive 🧰
+
+To build truly cross-platform apps, we must lean heavily on JUCE's abstractions rather than raw OS calls.
+
+### 7.1 The JUCE Module System
+
+JUCE is monolithic but modular. You don't verify if a file exists using `<fstream>` (which behaves differently on Windows/Linux regarding locked files); you use `juce::File`.
+
+**Key Modules for Plugins:**
+- `juce_audio_processors`: The wrapper for VST3/AU/AAX protocols.
+- `juce_audio_basics`: MIDI buffers, AudioBuffers.
+- `juce_core`: Strings, Files, Time, Logger, XML, JSON.
+- `juce_graphics`: 2D rendering engine.
+- `juce_gui_basics`: Components, mouse handling.
+
+**Core Philosophy:**
+If a class exists in `juce_core` (like `juce::String` or `juce::Array`), prefer it over `std::` equivalents when interacting with other JUCE APIs. They are optimized to play together.
+
+### 7.2 The `juce::ValueTree` (The Soul)
+
+The `ValueTree` is the most important non-audio class in JUCE. It is a lightweight, recursive, reference-counted data structure that functions like a DOM (Document Object Model).
+
+**Why it's critical:**
+1.  **State Management:** It holds the entire state of your plugin (parameters, UI settings, internal variables).
+2.  **Undo/Redo:** It has built-in `UndoManager` support.
+3.  **Serialization:** It converts to/from XML or Binary with one line of code.
+
+```cpp
+// Example: Validating a ValueTree structure
+juce::ValueTree root("PluginState");
+juce::ValueTree preset("Preset");
+preset.setProperty("name", "Deep Bass", nullptr);
+preset.setProperty("gain", 0.75, nullptr);
+root.addChild(preset, -1, nullptr);
+
+// Listeners get notified automatically everywhere in your code
+root.addListener(this); 
+```
+
+### 7.3 `AudioProcessor` vs `AudioProcessorEditor`
+
+The strict separation of concerns is mandatory.
+
+**AudioProcessor (The Brain):**
+- Lives on the **Audio Thread** (mostly).
+- Created when the plugin loads.
+- Persists for the plugin's lifetime.
+- Handles DSP, parameter values, and state save/load.
+- **Never** references the GUI directly.
+
+**AudioProcessorEditor (The Face):**
+- Lives on the **Message Thread**.
+- Created only when the user opens the plugin window.
+- Destroyed when the user closes the window.
+- **Must** query the Processor for data; never store state itself.
+
+**The Golden Rule:**
+> If your plugin crashes when the UI is closed, you put logic in the Editor that belonged in the Processor.
+
+### 7.4 Smart Pointers in JUCE
+
+Memory leaks in C++ are fatal.
+- `std::unique_ptr`: Use for objects you own exclusively (e.g., helper classes inside Processor).
+- `std::shared_ptr`: Use sparingly.
+- `juce::ReferenceCountedObjectPtr`: JUCE's intrusive equivalent of shared_ptr. Used for `ValueTree` data and specialized audio buffers.
+
+---
+
+## Chapter 8: Managing State 💾
+
+State is the single hardest problem in plugin development. You have the DAW automation trying to change a value, the UI trying to change it, and the DSP reading it—all at once.
+
+### 8.1 The `AudioProcessorValueTreeState` (APVTS)
+
+The APVTS is the standard solution. It binds the three worlds together:
+1.  **Parameters:** Exposed to the DAW.
+2.  **State:** The `ValueTree` data.
+3.  **UI:** Attachments to Sliders/Buttons.
+
+**Setup in `PluginProcessor.h`:**
+```cpp
+juce::AudioProcessorValueTreeState apvts;
+juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
+```
+
+**Implementation:**
+```cpp
+// Constructor
+AnalogMorphV333AudioProcessor::AnalogMorphV333AudioProcessor() 
+    : apvts(*this, &undoManager, "Parameters", createParameterLayout())
+{ 
+    // ...
+}
+
+juce::AudioProcessorValueTreeState::ParameterLayout 
+    AnalogMorphV333AudioProcessor::createParameterLayout()
+{
+    std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
+    
+    params.push_back(std::make_unique<juce::AudioParameterFloat>(
+        "gain", "Gain", 0.0f, 1.0f, 0.5f));
+        
+    return { params.begin(), params.end() };
+}
+```
+
+### 8.2 Thread Safety (The Atomic Reality)
+
+The DSP `processBlock()` runs thousands of times per second. It cannot wait for a lock.
+The UI runs at 60fps.
+
+**The Danger Zone:**
+```cpp
+// Don't do this in processBlock!
+float currentGain = apvts.getParameter("gain")->getValue(); // Slow string lookup!
+```
+
+**The Solution: Raw Pointers + Atomics**
+Cache pointers to parameters during `prepareToPlay` or construction.
+```cpp
+// In header
+std::atomic<float>* gainParameter = nullptr;
+
+// In prepareToPlay
+gainParameter = apvts.getRawParameterValue("gain");
+
+// In processBlock
+float g = *gainParameter; // Fast, lock-free atomic read
+```
+
+### 8.3 State Serialization
+
+When the user hits "Save" in the DAW, the DAW asks the plugin for a chunk of data.
+
+```cpp
+void AnalogMorphV333AudioProcessor::getStateInformation (juce::MemoryBlock& destData)
+{
+    // Serialize the generic ValueTree state
+    auto state = apvts.copyState();
+    std::unique_ptr<juce::XmlElement> xml(state.createXml());
+    copyXmlToBinary(*xml, destData);
+}
+
+void AnalogMorphV333AudioProcessor::setStateInformation (const void* data, int sizeInBytes)
+{
+    std::unique_ptr<juce::XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
+    if (xmlState != nullptr)
+        if (xmlState->hasTagName(apvts.state.getType()))
+            apvts.replaceState(juce::ValueTree::fromXml(*xmlState));
+}
+```
+
+---
+
+## Chapter 9: The GUI Architecture 🎨
+
+Building a GUI that looks identical on Windows (High Contrast mode scaling), macOS (Retina), and Linux (X11 weirdness) requires discipline.
+
+### 9.1 LookAndFeel Class
+
+JUCE draws generic widgets (sliders, buttons) by default. They look... functional.
+To brand your plugin ("ANMO V333"), you override the `juce::LookAndFeel_V4`.
+
+**Strategy:**
+Create a global `PluginLookAndFeel` class.
+Define color palettes once.
+
+```cpp
+class PluginLookAndFeel : public juce::LookAndFeel_V4 {
+public:
+    PluginLookAndFeel() {
+        setColour(juce::Slider::thumbColourId, juce::Colours::cyan);
+        setColour(juce::Slider::rotarySliderFillColourId, juce::Colours::darkgrey);
+    }
+    
+    void drawRotarySlider(...) override {
+        // Custom vector drawing code ensuring sharpness at any scale
+    }
+};
+```
+
+### 9.2 Responsive Design (FlexBox & Grid)
+
+Hardcoding pixels (`setBounds(10, 10, 100, 20)`) is fragile.
+Use `juce::FlexBox` (CSS logic in C++) for layout.
+
+```cpp
+void MainComponent::resized() {
+    juce::FlexBox masterBox;
+    masterBox.flexDirection = juce::FlexBox::Direction::column;
+    
+    juce::FlexBox headerBox;
+    headerBox.items.add(juce::FlexItem(titleLabel).withFlex(1));
+    
+    masterBox.items.add(juce::FlexItem(headerBox).withHeight(50));
+    masterBox.items.add(juce::FlexItem(controlsContainer).withFlex(1));
+
+    masterBox.performLayout(getLocalBounds());
+}
+```
+**Benefit:** If the user drags the corner to resize the window, everything scales proportionally without math errors.
+
+### 9.3 Accessibility (The Forgotten Requirement)
+
+Screen readers (VoiceOver on Mac, Narrator on Windows) need help understanding your custom knobs.
+
+**JUCE 8** has vastly improved accessibility support.
+Ensure every custom component implements:
+- `getTitle()`
+- `getDescription()`
+- `getHelpText()`
+- `createAccessibilityHandler()` (if non-standard interaction)
+
+This is not just for visually impaired users; it helps automation tools and testing scripts understand your UI.
+
+---
+
+# Part IV: Application Lifecycle & CI/CD
+
+## Chapter 10: The Build Pipeline 🛠️
+
+A professional plugin is not "Build -> Export" from an IDE. It is a scripted pipeline.
+
+### 10.1 CMake Presets
+
+Stop typing long CMake commands. Use `CMakePresets.json` (introduced in CMake 3.19). This file lives in your root directory and defines your standard build configurations.
+
+**Example `CMakePresets.json`:**
+```json
+{
+  "version": 3,
+  "configurePresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "JUCE_COPY_PLUGIN_AFTER_BUILD": "OFF" 
+      }
+    },
+    {
+      "name": "macos-release",
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_OSX_ARCHITECTURES": "arm64;x86_64"
+      }
+    },
+    {
+      "name": "windows-release",
+      "inherits": "base",
+      "generator": "Visual Studio 17 2022",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "MSVC_RUNTIME_LIBRARY": "MultiThreaded"
+      }
+    }
+  ]
+}
+```
+
+**Usage:**
+```bash
+cmake --preset macos-release
+cmake --build --preset macos-release
+```
+
+### 10.2 Semantic Versioning
+
+Never hardcode version numbers in source code (`#define VERSION "1.0"`).
+Inject them via CMake.
+
+**CMakeLists.txt:**
+```cmake
+project(ANMO_V333 VERSION 1.2.0 LANGUAGES C CXX)
+
+# Pass to CPP
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+    JUCER_VERSION_STRING="${PROJECT_VERSION}"
+)
+```
+
+In your `PluginEditor.cpp`, you can now display `JUCER_VERSION_STRING` in your "About" box.
+
+---
+
+## Chapter 11: Application Signing & Notarization (Automated) 🔐
+
+Manual signing is error-prone. We script it using Python or Bash.
+
+### 11.1 Windows: SignTool
+
+You need a code signing certificate (EV or Standard).
+Tool: `signtool.exe` (from Windows SDK).
+
+**Powershell Script (`scripts/sign_win.ps1`):**
+```powershell
+param($FilePath, $CertPath, $CertPass)
+
+& "C:\Program Files (x86)\Windows Kits\10\bin\10.0.22621.0\x64\signtool.exe" sign /f $CertPath /p $CertPass /tr http://timestamp.sectigo.com /td sha256 /fd sha256 $FilePath
+```
+*Note: The timestamp server (`/tr`) is crucial. It ensures the signature remains valid even after the certificate expires.*
+
+### 11.2 macOS: Notarization Script
+
+**Bash Script (`scripts/notarize_mac.sh`):**
+```bash
+#!/bin/bash
+PLUGIN_PATH="$1"
+ZIP_PATH="${PLUGIN_PATH}.zip"
+
+# 1. Sign
+codesign --force --deep --options runtime --timestamp --sign "Developer ID Application: Your Name" "$PLUGIN_PATH"
+
+# 2. Zip for upload
+ditto -c -k --keepParent "$PLUGIN_PATH" "$ZIP_PATH"
+
+# 3. Submit
+xcrun notarytool submit "$ZIP_PATH" --keychain-profile "AC_PASSWORD" --wait
+
+# 4. Staple
+xcrun stapler staple "$PLUGIN_PATH"
+```
+
+---
+
+## Chapter 12: Installers and Updates 📦
+
+Users do not want to drag-and-drop `.vst3` files.
+
+### 12.1 Windows: Inno Setup
+
+Free, scriptable, standard.
+
+**File: `Installer/win/script.iss`**
+```iss
+[Setup]
+AppName=ANMO V333
+AppVersion=1.2.0
+DefaultDirName={commonpf}\VstPlugins\ANMO V333
+OutputBaseFilename=ANMO_V333_Windows_Installer
+
+[Files]
+; Copy VST3 to standard system location
+Source: "..\..\Builds\Windows\x64\Release\VST3\ANMO V333.vst3"; DestDir: "{commoncf64}\VST3"; Flags: ignoreversion
+
+[Icons]
+Name: "{group}\Uninstall ANMO V333"; Filename: "{uninstallexe}"
+```
+
+### 12.2 macOS: pkgbuild
+
+We need a `.pkg` installer.
+It involves two steps:
+1.  **Component Package:** Contains the raw files.
+2.  **Product Package:** Contains the UI and logic.
+
+```bash
+# Create component
+pkgbuild --root "Staging/" --identifier "com.indra.anmo.vst3" --version "1.2.0" --install-location "/Library/Audio/Plug-Ins/VST3" "component.pkg"
+
+# Create product (signed installer)
+productbuild --distribution "distribution.xml" --sign "Developer ID Installer: Your Name" "ANMO_V333_Installer.pkg"
+```
+
+### 12.3 Linux: DEB Packages
+
+Basic Debian packaging structure:
+
+```text
+AMNO-V333_1.2.0_amd64/
+├── DEBIAN/
+│   └── control
+└── usr/
+    └── lib/
+        └── vst3/
+            └── ANMO V333.vst3
+```
+
+**Control File:**
+```text
+Package: anmo-v333
+Version: 1.2.0
+Architecture: amd64
+Maintainer: indraqubit
+Description: Analog Morph V333 VST3 Plugin
+Depends: libfreetype6, libcurl4
+```
+
+Build command: `dpkg-deb --build AMNO-V333_1.2.0_amd64`
+
+---
+
+## Chapter 13: Continuous Integration (GitHub Actions) 🤖
+
+We need a robot to compile cleanly on all OSes for every commit.
+
+### 13.1 The Workflow File (`.github/workflows/build.yml`)
+
+This is a simplified "Matrix" build.
+
+```yaml
+name: CI Build
+
+on: [push, pull_request]
+
+jobs:
+  build_and_test:
+    name: Build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-2022]
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
+
+    # Linux Dependences
+    - name: Install Linux Deps
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libasound2-dev libjack-jackd2-dev \
+            libcurl4-openssl-dev libfreetype6-dev libx11-dev libxcomposite-dev \
+            libxext-dev libxinerama-dev libxrandr-dev libxcursor-dev \
+            mesa-common-dev freeglut3-dev
+
+    # CMake Configure
+    - name: Configure
+      run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+
+    # CMake Build
+    - name: Build
+      run: cmake --build build --config Release --parallel 4
+
+    # Run Unit Tests (if you have them)
+    - name: Test
+      run: cd build && ctest -C Release
+
+    # Upload Artifacts
+    - uses: actions/upload-artifact@v3
+      with:
+        name: ANMO-V333-${{ matrix.os }}
+        path: |
+          build/ANMO V333_artefacts/**/*.vst3
+          build/ANMO V333_artefacts/**/*.component
+```
+
+### 13.2 Handling Secrets
+
+Never commit your signing certificates.
+Use **GitHub Secrets**:
+- `WIN_CERT_PFX` (Base64 encoded)
+- `WIN_CERT_PASSWORD`
+- `MACOS_CERT_P12` (Base64 encoded)
+- `MACOS_NOTARY_PASSWORD`
+
+In the CI workflow, decode these files to disk before the signing step, then delete them immediately after.
+
+---
+
+# Part V: Appendices & Reference
+
+## Appendix A: CMake Cheat Sheet for JUCE 📝
+
+A quick reference for the most common commands used in `CMakeLists.txt` for audio plugins.
+
+### Adding a Plugin Target
+```cmake
+juce_add_plugin(ANMO_V333
+    COMPANY_NAME "IndraQubit"
+    IS_SYNTH TRUE
+    NEEDS_MIDI_INPUT TRUE
+    NEEDS_MIDI_OUTPUT FALSE
+    IS_MIDI_EFFECT FALSE
+    EDITOR_WANTS_KEYBOARD_FOCUS TRUE
+    COPY_PLUGIN_AFTER_BUILD TRUE
+    PLUGIN_MANUFACTURER_CODE "InQb" # 4 chars
+    PLUGIN_CODE "AnMo"              # 4 chars
+    FORMATS VST3 AU Standalone
+    PRODUCT_NAME "ANMO V333"
+)
+```
+
+### Linking Modules
+```cmake
+target_link_libraries(ANMO_V333
+    PRIVATE
+        juce::juce_audio_utils
+        juce::juce_dsp
+        juce::juce_gui_basics
+    PUBLIC
+        juce::juce_core # If headers are included in your public headers
+)
+```
+
+### Embedding Binary Assets
+Instead of `BinaryBuilder`:
+```cmake
+juce_add_binary_data(Assets
+    SOURCES
+        Resources/Fonts/Roboto-Regular.ttf
+        Resources/Images/Knob_Strip.png
+)
+
+target_link_libraries(ANMO_V333 PRIVATE Assets)
+```
+*Usage in C++:* `BinaryData::Knob_Strip_png`
+
+---
+
+## Appendix B: Common JUCE Assertions & Fixes 🐛
+
+When you run in Debug mode, JUCE shouts at you via `jassert`.
+
+**1. "Leaking objects detected" (Shutdown)**
+*   **Cause:** You forgot to delete something, or you have a circular dependency with `std::shared_ptr` or `ReferenceCountedObjectPtr`.
+*   **Fix:** Check your destructor order. Ensure `AudioProcessorEditor` is destroyed *before* the `AudioProcessor` (it usually is).
+
+**2. "Message Manager Locking"**
+*   **Cause:** You are trying to call a GUI function (like `repaint()`) from the Audio Thread or a background thread without a lock.
+*   **Fix:** Use `juce::MessageManager::callAsync()` to marshal the call back to the main thread.
+
+**3. "Component not visible"**
+*   **Cause:** You created a child component but forgot `addAndMakeVisible(component)`.
+*   **Fix:** Add it in the constructor.
+
+**4. "Buffer size mismatch"**
+*   **Cause:** You are processing audio in blocks of fixed size (e.g. 512) but the host sent a smaller partial block at the end of a loop.
+*   **Fix:** Always respect `buffer.getNumSamples()`.
+
+---
+
+## Appendix C: Recommended Reading 📚
+
+**DSP & Mathematics:**
+- *The Audio Programming Book* (Boulanger & Lazzarini)
+- *Signals and Systems for Dummies* (Great intro)
+- *EarLevel Engineering* (Blog by Nigel Redmon)
+
+**C++ Development:**
+- *Effective Modern C++* (Scott Meyers) - **Mandatory**
+- *A Tour of C++* (Bjarne Stroustrup)
+
+**Communities:**
+- **The JUCE Forum:** The friendliest place on the internet.
+- **The Audio Programmer (Discord/YouTube):** Excellent tutorials.
+
+---
+
+# Epilogue
+
+Cross-platform development is a journey of compromise and detailed obsession. By choosing JUCE and CMake, you have chosen the path of least resistance, but resistance remains.
+
+Remember the golden rule: **The user doesn't care about your code. They care about their music.** If your plugin crashes their session, your perfectly guarded C++ smart pointers mean nothing.
+
+Build robustly. Test everywhere. Make noise.
+
+**-- indraqubit, January 2026**
+
