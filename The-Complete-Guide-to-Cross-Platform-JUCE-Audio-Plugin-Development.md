@@ -1,4 +1,5 @@
-# 📘 The Complete Guide to Cross-Platform JUCE Audio Plugin Development
+﻿# 📘 The Complete Guide to Cross-Platform JUCE Audio Plugin Development
+*Agent ID: Gemini 3 pro*
 
 **Navigating the Challenges of Linux, Windows, and macOS Plugin Distribution**
 
@@ -11,25 +12,30 @@
 
 ---
 
-# Table of Contents
+# Table of Contents
+*Agent ID: Gemini 3 pro*
 
-## Part I: Foundation & Architecture
+## Part I: Foundation & Architecture
+*Agent ID: Gemini 3 pro*
 
-### Chapter 1: Introduction
+### Chapter 1: Introduction
+*Agent ID: Gemini 3 pro*
 - [1.1 Who This Book Is For](#11-who-this-book-is-for)
 - [1.2 What You'll Learn](#12-what-youll-learn)
 - [1.3 Prerequisites](#13-prerequisites)
 - [1.4 Case Study: ANMO V333](#14-case-study-anmo-v333)
 - [1.5 How to Use This Book](#15-how-to-use-this-book)
 
-### Chapter 2: The Cross-Platform Reality
+### Chapter 2: The Cross-Platform Reality
+*Agent ID: Gemini 3 pro*
 - [2.1 The Myth of "Write Once, Run Anywhere"](#21-the-myth-of-write-once-run-anywhere)
 - [2.2 Platform Fragmentation Analysis](#22-platform-fragmentation-analysis)
 - [2.3 Why Major Vendors "Don't Have These Problems"](#23-why-major-vendors-dont-have-these-problems)
 - [2.4 The Indie Developer's Challenge](#24-the-indie-developers-challenge)
 - [2.5 Setting Realistic Expectations](#25-setting-realistic-expectations)
 
-### Chapter 3: Architecture Design Principles
+### Chapter 3: Architecture Design Principles
+*Agent ID: Gemini 3 pro*
 - [3.1 Platform Abstraction Layer Design](#31-platform-abstraction-layer-design)
 - [3.2 Directory Structure Best Practices](#32-directory-structure-best-practices)
 - [3.3 Dependency Management Strategies](#33-dependency-management-strategies)
@@ -38,9 +44,11 @@
 
 ---
 
-## Part II: Platform-Specific Development
+## Part II: Platform-Specific Development
+*Agent ID: Gemini 3 pro*
 
-### Chapter 4: Linux Development
+### Chapter 4: Linux Development
+*Agent ID: Gemini 3 pro*
 - [4.1 Linux Audio Plugin Ecosystem](#41-linux-audio-plugin-ecosystem)
 - [4.2 Graphics Subsystem (X11, Wayland, OpenGL)](#42-graphics-subsystem)
 - [4.3 System Dependencies & Package Management](#43-system-dependencies)
@@ -49,7 +57,8 @@
 - [4.6 Distribution-Specific Considerations](#46-distribution-specific-considerations)
 - [4.7 Testing Matrix for Linux](#47-testing-matrix)
 
-### Chapter 5: Windows Development
+### Chapter 5: Windows Development
+*Agent ID: Gemini 3 pro*
 - [5.1 Windows Audio Plugin Landscape](#51-windows-audio-plugin-landscape)
 - [5.2 The DirectX Dependency Challenge](#52-directx-dependency)
 - [5.3 Visual C++ Runtime Hell](#53-vc-runtime-hell)
@@ -59,7 +68,8 @@
 - [5.7 Windows Version Compatibility](#57-windows-version-compatibility)
 - [5.8 Corporate/Enterprise Windows Environments](#58-corporate-environments)
 
-### Chapter 6: macOS Development
+### Chapter 6: macOS Development
+*Agent ID: Gemini 3 pro*
 - [6.1 macOS Plugin Ecosystem](#61-macos-plugin-ecosystem)
 - [6.2 Metal Graphics Subsystem](#62-metal-graphics)
 - [6.3 System Dependencies (The Easy Part)](#63-system-dependencies)
@@ -71,23 +81,27 @@
 
 ---
 
-## Part III: Cross-Platform Strategies
+## Part III: Cross-Platform Strategies
+*Agent ID: Gemini 3 pro*
 
-### Chapter 7: JUCE Framework Deep Dive
+### Chapter 7: JUCE Framework Deep Dive
+*Agent ID: Gemini 3 pro*
 - [7.1 JUCE Cross-Platform Capabilities](#71-juce-capabilities)
 - [7.2 JUCE Version Selection Strategy](#72-version-selection)
 - [7.3 Module Configuration](#73-module-configuration)
 - [7.4 Graphics Rendering Backends](#74-graphics-backends)
 - [7.5 Audio Device Abstraction](#75-audio-abstraction)
 
-### Chapter 8: Platform Abstraction Implementation
+### Chapter 8: Platform Abstraction Implementation
+*Agent ID: Gemini 3 pro*
 - [8.1 Abstract Interface Design](#81-abstract-interface)
 - [8.2 Platform-Specific Compilation](#82-platform-compilation)
 - [8.3 Cross-Platform File Paths](#83-file-paths)
 - [8.4 System Information Gathering](#84-system-info)
 - [8.5 Platform Detection & Conditional Compilation](#85-platform-detection)
 
-### Chapter 9: Dependency Management
+### Chapter 9: Dependency Management
+*Agent ID: Gemini 3 pro*
 - [9.1 OpenSSL Cross-Platform Strategy](#91-openssl-strategy)
 - [9.2 Static vs Dynamic Linking](#92-static-dynamic-linking)
 - [9.3 Bundling Dependencies (When & How)](#93-bundling-dependencies)
@@ -96,9 +110,11 @@
 
 ---
 
-## Part IV: Licensing & Security
+## Part IV: Licensing & Security
+*Agent ID: Gemini 3 pro*
 
-### Chapter 10: JWT-Based Licensing System
+### Chapter 10: JWT-Based Licensing System
+*Agent ID: Gemini 3 pro*
 - [10.1 Why JWT for Audio Plugins](#101-why-jwt)
 - [10.2 Asymmetric Key Cryptography](#102-asymmetric-keys)
 - [10.3 Server-Side License Generation](#103-server-side)
@@ -106,7 +122,8 @@
 - [10.5 Machine ID Fingerprinting](#105-machine-id)
 - [10.6 Online Validation & Grace Periods](#106-online-validation)
 
-### Chapter 11: Security Hardening
+### Chapter 11: Security Hardening
+*Agent ID: Gemini 3 pro*
 - [11.1 Code Obfuscation Strategies](#111-obfuscation)
 - [11.2 Anti-Debugging Techniques](#112-anti-debugging)
 - [11.3 Integrity Checking](#113-integrity-checking)
@@ -115,9 +132,11 @@
 
 ---
 
-## Part V: Packaging & Distribution
+## Part V: Packaging & Distribution
+*Agent ID: Gemini 3 pro*
 
-### Chapter 12: Linux Packaging
+### Chapter 12: Linux Packaging
+*Agent ID: Gemini 3 pro*
 - [12.1 Debian/Ubuntu (.deb) Packages](#121-deb-packages)
 - [12.2 Arch User Repository (AUR)](#122-aur)
 - [12.3 RPM Packages (Fedora/RHEL)](#123-rpm-packages)
@@ -125,7 +144,8 @@
 - [12.5 Flatpak for Plugins](#125-flatpak)
 - [12.6 Desktop Integration](#126-desktop-integration)
 
-### Chapter 13: Windows Packaging
+### Chapter 13: Windows Packaging
+*Agent ID: Gemini 3 pro*
 - [13.1 Inno Setup Installer Creation](#131-inno-setup)
 - [13.2 Dependency Installation Automation](#132-dependency-automation)
 - [13.3 Registry Management](#133-registry)
@@ -133,7 +153,8 @@
 - [13.5 Silent Installation Support](#135-silent-install)
 - [13.6 Update Mechanisms](#136-update-mechanisms)
 
-### Chapter 14: macOS Packaging
+### Chapter 14: macOS Packaging
+*Agent ID: Gemini 3 pro*
 - [14.1 .pkg Installer Creation](#141-pkg-creation)
 - [14.2 .dmg Disk Image Distribution](#142-dmg-distribution)
 - [14.3 Code Signing Workflow](#143-code-signing-workflow)
@@ -143,16 +164,19 @@
 
 ---
 
-## Part VI: CI/CD & Automation
+## Part VI: CI/CD & Automation
+*Agent ID: Gemini 3 pro*
 
-### Chapter 15: Build Automation
+### Chapter 15: Build Automation
+*Agent ID: Gemini 3 pro*
 - [15.1 GitHub Actions for Multi-Platform Builds](#151-github-actions)
 - [15.2 Artifact Management](#152-artifact-management)
 - [15.3 Version Management & Tagging](#153-version-management)
 - [15.4 Automated Testing](#154-automated-testing)
 - [15.5 Build Matrices](#155-build-matrices)
 
-### Chapter 16: Release Management
+### Chapter 16: Release Management
+*Agent ID: Gemini 3 pro*
 - [16.1 Release Pipeline Design](#161-release-pipeline)
 - [16.2 Changelog Generation](#162-changelog)
 - [16.3 Binary Distribution](#163-binary-distribution)
@@ -161,23 +185,27 @@
 
 ---
 
-## Part VII: Diagnostics & Support
+## Part VII: Diagnostics & Support
+*Agent ID: Gemini 3 pro*
 
-### Chapter 17: Error Handling & Diagnostics
+### Chapter 17: Error Handling & Diagnostics
+*Agent ID: Gemini 3 pro*
 - [17.1 Diagnostic Logging Architecture](#171-logging-architecture)
 - [17.2 System Information Collection](#172-system-info-collection)
 - [17.3 Error Message Design](#173-error-message-design)
 - [17.4 User-Friendly Error Dialogs](#174-error-dialogs)
 - [17.5 Diagnostic Log Analysis](#175-log-analysis)
 
-### Chapter 18: Support Infrastructure
+### Chapter 18: Support Infrastructure
+*Agent ID: Gemini 3 pro*
 - [18.1 Support Ticket System](#181-support-tickets)
 - [18.2 Knowledge Base Creation](#182-knowledge-base)
 - [18.3 Common Issue Resolution](#183-common-issues)
 - [18.4 Support Email Templates](#184-email-templates)
 - [18.5 Community Support Forums](#185-community-forums)
 
-### Chapter 19: Testing & Quality Assurance
+### Chapter 19: Testing & Quality Assurance
+*Agent ID: Gemini 3 pro*
 - [19.1 Testing Strategy](#191-testing-strategy)
 - [19.2 Virtual Machine Testing Setup](#192-vm-testing)
 - [19.3 DAW Compatibility Testing](#193-daw-testing)
@@ -186,20 +214,24 @@
 
 ---
 
-## Part VIII: Advanced Topics
+## Part VIII: Advanced Topics
+*Agent ID: Gemini 3 pro*
 
-### Chapter 20: Performance Optimization
+### Chapter 20: Performance Optimization
+*Agent ID: Gemini 3 pro*
 - [20.1 Cross-Platform Profiling](#201-profiling)
 - [20.2 Platform-Specific Optimizations](#202-platform-optimizations)
 - [20.3 Graphics Performance](#203-graphics-performance)
 - [20.4 Memory Management](#204-memory-management)
 
-### Chapter 21: Localization & Internationalization
+### Chapter 21: Localization & Internationalization
+*Agent ID: Gemini 3 pro*
 - [21.1 Multi-Language Support](#211-multi-language)
 - [21.2 Platform-Specific Text Rendering](#212-text-rendering)
 - [21.3 Character Encoding Issues](#213-character-encoding)
 
-### Chapter 22: Legal & Compliance
+### Chapter 22: Legal & Compliance
+*Agent ID: Gemini 3 pro*
 - [22.1 License Agreement Creation](#221-license-agreement)
 - [22.2 Privacy Policy (GDPR, CCPA)](#222-privacy-policy)
 - [22.3 Third-Party License Compliance](#223-third-party-licenses)
@@ -207,27 +239,32 @@
 
 ---
 
-## Appendices
+## Appendices
+*Agent ID: Gemini 3 pro*
 
-### Appendix A: Quick Reference
+### Appendix A: Quick Reference
+*Agent ID: Gemini 3 pro*
 - [A.1 Platform Comparison Matrix](#a1-platform-comparison)
 - [A.2 Dependency Checklists](#a2-dependency-checklists)
 - [A.3 Common Error Codes](#a3-error-codes)
 - [A.4 Build Command Reference](#a4-build-commands)
 
-### Appendix B: Code Templates
+### Appendix B: Code Templates
+*Agent ID: Gemini 3 pro*
 - [B.1 SystemDiagnostics Complete Implementation](#b1-systemdiagnostics)
 - [B.2 PlatformUtils Complete Implementation](#b2-platformutils)
 - [B.3 LicenseManager Complete Implementation](#b3-licensemanager)
 - [B.4 CMakeLists.txt Template](#b4-cmake-template)
 
-### Appendix C: Resources
+### Appendix C: Resources
+*Agent ID: Gemini 3 pro*
 - [C.1 Tools & Software](#c1-tools)
 - [C.2 Documentation Links](#c2-documentation)
 - [C.3 Community Resources](#c3-community)
 - [C.4 Recommended Reading](#c4-reading)
 
-### Appendix D: Troubleshooting Guide
+### Appendix D: Troubleshooting Guide
+*Agent ID: Gemini 3 pro*
 - [D.1 Linux Common Issues](#d1-linux-issues)
 - [D.2 Windows Common Issues](#d2-windows-issues)
 - [D.3 macOS Common Issues](#d3-macos-issues)
@@ -235,13 +272,15 @@
 
 ---
 
-# About the Author
+# About the Author
+*Agent ID: Gemini 3 pro*
 
 [Your bio and contact information]
 
 ---
 
-# Preface
+# Preface
+*Agent ID: Gemini 3 pro*
 
 This book is born from real-world experience developing and distributing cross-platform audio plugins. After countless hours fighting dependency issues, navigating platform-specific quirks, and debugging obscure installation failures, I realized that while JUCE provides excellent cross-platform audio and GUI abstractions, the **distribution and deployment** story is still largely DIY.
 
@@ -259,13 +298,16 @@ Whether you're a solo developer or small team, this book will save you months of
 
 ---
 
-# Part I: Foundation & Architecture
+# Part I: Foundation & Architecture
+*Agent ID: Gemini 3 pro*
 
 ---
 
-## Chapter 1: Introduction
+## Chapter 1: Introduction
+*Agent ID: Gemini 3 pro*
 
-### 1.1 Who This Book Is For
+### 1.1 Who This Book Is For
+*Agent ID: Gemini 3 pro*
 
 This book is written for:
 
@@ -286,7 +328,8 @@ This book is written for:
 - Large companies with dedicated QA teams (you have different problems)
 - Developers building single-platform plugins only (though you might change your mind)
 
-### 1.2 What You'll Learn
+### 1.2 What You'll Learn
+*Agent ID: Gemini 3 pro*
 
 By the end of this book, you will:
 
@@ -310,7 +353,8 @@ By the end of this book, you will:
 
 ✅ **Avoid** months of trial and error
 
-### 1.3 Prerequisites
+### 1.3 Prerequisites
+*Agent ID: Gemini 3 pro*
 
 **Required:**
 - C++17 or later
@@ -328,7 +372,8 @@ By the end of this book, you will:
 - Apple Developer account ($99/year) if targeting macOS
 - Code signing certificate for Windows (optional)
 
-### 1.4 Case Study: ANMO V333
+### 1.4 Case Study: ANMO V333
+*Agent ID: Gemini 3 pro*
 
 Throughout this book, we'll follow the development and distribution of **ANMO V333**, a fictional (but realistic) analog modeling synthesizer plugin.
 
@@ -355,7 +400,8 @@ Team Size: 1-2 developers
 
 This represents a **realistic indie plugin** - not oversimplified, but also not enterprise-scale complexity.
 
-### 1.5 How to Use This Book
+### 1.5 How to Use This Book
+*Agent ID: Gemini 3 pro*
 
 **Reading Strategies:**
 
@@ -418,9 +464,11 @@ void okayExample() {
 
 ---
 
-## Chapter 2: The Cross-Platform Reality
+## Chapter 2: The Cross-Platform Reality
+*Agent ID: Gemini 3 pro*
 
-### 2.1 The Myth of "Write Once, Run Anywhere"
+### 2.1 The Myth of "Write Once, Run Anywhere"
+*Agent ID: Gemini 3 pro*
 
 **The Promise:**
 
@@ -519,11 +567,13 @@ This is the reality of cross-platform audio plugins in 2024:
 └─────────────────────────────────────────┘
 ```
 
-### 2.2 Platform Fragmentation Analysis
+### 2.2 Platform Fragmentation Analysis
+*Agent ID: Gemini 3 pro*
 
 Let's quantify the actual fragmentation you'll face:
 
-#### **Linux Fragmentation**
+#### **Linux Fragmentation**
+*Agent ID: Gemini 3 pro*
 
 **Distribution Diversity:**
 ```
@@ -543,7 +593,8 @@ Each has different:
 
 **Library Version Hell:**
 ```bash
-# Same library, different versions:
+# Same library, different versions:
+*Agent ID: Gemini 3 pro*
 
 Ubuntu 20.04 (LTS):
   glibc 2.31
@@ -555,8 +606,10 @@ Ubuntu 22.04 (LTS):
   libstdc++ 12
   OpenSSL 3.0
 
-# Your plugin compiled on 22.04 won't run on 20.04
-# Error: version `GLIBC_2.35' not found
+# Your plugin compiled on 22.04 won't run on 20.04
+*Agent ID: Gemini 3 pro*
+# Error: version `GLIBC_2.35' not found
+*Agent ID: Gemini 3 pro*
 ```
 
 **Graphics Stack Diversity:**
@@ -592,7 +645,8 @@ Must test:
 Realistic indie developer testing: 2-4 scenarios ⚠️
 ```
 
-#### **Windows Fragmentation**
+#### **Windows Fragmentation**
+*Agent ID: Gemini 3 pro*
 
 **Windows Version Chaos:**
 ```
@@ -687,7 +741,8 @@ Minimum test scenarios:
 Realistic indie testing: 2-3 scenarios ⚠️
 ```
 
-#### **macOS Fragmentation (The Least Worst)**
+#### **macOS Fragmentation (The Least Worst)**
+*Agent ID: Gemini 3 pro*
 
 **macOS Version Spread:**
 ```
@@ -750,13 +805,15 @@ Realistic indie testing: 2-4 scenarios ✓ (manageable)
 
 ---
 
-### 2.3 Why Major Vendors "Don't Have These Problems"
+### 2.3 Why Major Vendors "Don't Have These Problems"
+*Agent ID: Gemini 3 pro*
 
 **Spoiler: They DO have these problems. They just handle them differently.**
 
 Let's look at real examples:
 
-#### **Case Study: Waves**
+#### **Case Study: Waves**
+*Agent ID: Gemini 3 pro*
 
 **Waves Central (Installer App):**
 ```
@@ -791,7 +848,8 @@ Waves response:
 Lesson: Even with huge resources, cross-platform is hard
 ```
 
-#### **Case Study: Native Instruments**
+#### **Case Study: Native Instruments**
+*Agent ID: Gemini 3 pro*
 
 **Native Access:**
 ```
@@ -815,7 +873,8 @@ Issues still reported:
 Lesson: Money helps, but doesn't eliminate issues
 ```
 
-#### **Case Study: Xfer Serum (Indie Success Story)**
+#### **Case Study: Xfer Serum (Indie Success Story)**
+*Agent ID: Gemini 3 pro*
 
 **Approach: Keep It Simple**
 ```
@@ -837,7 +896,8 @@ Result:
 Lesson: Simple can work for indie developers
 ```
 
-#### **What Major Vendors Actually Do:**
+#### **What Major Vendors Actually Do:**
+*Agent ID: Gemini 3 pro*
 
 **1. Extensive Testing**
 ```yaml
@@ -913,7 +973,8 @@ Indie support (typical):
   Annual cost: Your sanity
 ```
 
-#### **The Uncomfortable Truth:**
+#### **The Uncomfortable Truth:**
+*Agent ID: Gemini 3 pro*
 
 Major vendors succeed at cross-platform because:
 
@@ -933,7 +994,8 @@ Major vendors succeed at cross-platform because:
 
 ---
 
-### 2.4 The Indie Developer's Challenge
+### 2.4 The Indie Developer's Challenge
+*Agent ID: Gemini 3 pro*
 
 **Your Reality:**
 
@@ -1014,7 +1076,8 @@ You CAN compete on:
 
 ---
 
-### 2.5 Setting Realistic Expectations
+### 2.5 Setting Realistic Expectations
+*Agent ID: Gemini 3 pro*
 
 **The Honest Timeline:**
 
@@ -1044,7 +1107,8 @@ Reality:
 
 **What to Expect Per Platform:**
 
-#### **Linux: The Good News Platform**
+#### **Linux: The Good News Platform**
+*Agent ID: Gemini 3 pro*
 
 ```yaml
 Difficulty: ⭐⭐ (Easiest)
@@ -1071,7 +1135,8 @@ Support Burden: Low
 Time to Stability: 2-4 weeks post-launch
 ```
 
-#### **Windows: The Nightmare Platform**
+#### **Windows: The Nightmare Platform**
+*Agent ID: Gemini 3 pro*
 
 ```yaml
 Difficulty: ⭐⭐⭐⭐⭐ (Hardest)
@@ -1099,7 +1164,8 @@ Support Burden: Very High
 Time to Stability: 3-6 months post-launch
 ```
 
-#### **macOS: The Bureaucratic Platform**
+#### **macOS: The Bureaucratic Platform**
+*Agent ID: Gemini 3 pro*
 
 ```yaml
 Difficulty: ⭐⭐⭐ (Medium-Hard)
@@ -1179,9 +1245,11 @@ This is how indie plugins succeed.
 
 ---
 
-## Chapter 3: Architecture Design Principles
+## Chapter 3: Architecture Design Principles
+*Agent ID: Gemini 3 pro*
 
-### 3.1 Platform Abstraction Layer Design
+### 3.1 Platform Abstraction Layer Design
+*Agent ID: Gemini 3 pro*
 
 The core principle of successful cross-platform development is **separation of concerns**:
 
@@ -1320,7 +1388,8 @@ public:
 
 ---
 
-### 3.2 Directory Structure Best Practices
+### 3.2 Directory Structure Best Practices
+*Agent ID: Gemini 3 pro*
 
 **Recommended Project Structure:**
 
@@ -1462,7 +1531,8 @@ ANMOV333/
 
 ---
 
-### 3.3 Dependency Management Strategies
+### 3.3 Dependency Management Strategies
+*Agent ID: Gemini 3 pro*
 
 **The Dependency Decision Matrix:**
 
@@ -1524,7 +1594,8 @@ macOS Strategy:
 **Implementation:**
 
 ```cmake
-# CMakeLists.txt
+# CMakeLists.txt
+*Agent ID: Gemini 3 pro*
 
 if(UNIX AND NOT APPLE)  # Linux
     # Use system OpenSSL (dynamic)
@@ -1565,7 +1636,8 @@ elseif(APPLE)  # macOS
 endif()
 ```
 
-### 3.4 Error Handling Philosophy
+### 3.4 Error Handling Philosophy
+*Agent ID: Gemini 3 pro*
 
 In a cross-platform environment, errors manifest differently. A missing file might crash on macOS but just return an error code on Windows.
 
@@ -1596,7 +1668,8 @@ void AnalogMorphV333AudioProcessor::prepareToPlay (double sampleRate, int sample
 }
 ```
 
-### 3.5 Build System Selection
+### 3.5 Build System Selection
+*Agent ID: Gemini 3 pro*
 
 **Projucer**
 - **Pros:** Official JUCE tool, easy GUI, handles Xcode/VS projects automatically.
@@ -1612,15 +1685,18 @@ void AnalogMorphV333AudioProcessor::prepareToPlay (double sampleRate, int sample
 
 ---
 
-# Part II: Platform-Specific Development
+# Part II: Platform-Specific Development
+*Agent ID: Gemini 3 pro*
 
 ---
 
-## Chapter 4: Linux Development 🐧
+## Chapter 4: Linux Development 🐧
+*Agent ID: Gemini 3 pro*
 
 Linux is often treated as a second-class citizen by major audio companies, but it offers the most transparent development environment. If you can make it work on Linux (where you have to understand every dependency), Windows and macOS become easier to understand.
 
-### 4.1 Linux Audio Plugin Ecosystem
+### 4.1 Linux Audio Plugin Ecosystem
+*Agent ID: Gemini 3 pro*
 
 **Plugin Formats:**
 - **VST3:** The standard. 95% of Linux DAWs support it (Bitwig, Reaper, Ardour, Waveform).
@@ -1629,7 +1705,8 @@ Linux is often treated as a second-class citizen by major audio companies, but i
 
 **Recommended Target:** VST3 (Essentials) + CLAP (Future-proof) + LV2 (Bonus).
 
-### 4.2 Graphics Subsystem (X11, Wayland, OpenGL)
+### 4.2 Graphics Subsystem (X11, Wayland, OpenGL)
+*Agent ID: Gemini 3 pro*
 
 This is the #1 source of headaches on Linux.
 
@@ -1653,7 +1730,8 @@ if (settings.shouldUseOpenGL()) {
 }
 ```
 
-### 4.3 System Dependencies & Package Management
+### 4.3 System Dependencies & Package Management
+*Agent ID: Gemini 3 pro*
 
 Unlike Windows/macOS, Linux relies on shared system libraries.
 
@@ -1675,7 +1753,8 @@ Forward compatibility works; backward compatibility rarely does.
 Always build on the **oldest supported distribution**.
 - **Action:** Set up your build environment (or CI runner) on Ubuntu 20.04 (LTS) or even 18.04.
 
-### 4.4 Audio Subsystem (ALSA, PulseAudio, JACK, PipeWire)
+### 4.4 Audio Subsystem (ALSA, PulseAudio, JACK, PipeWire)
+*Agent ID: Gemini 3 pro*
 
 - **ALSA:** Kernel level drivers. JUCE talks primarily to this.
 - **JACK:** Pro audio server. Low latency, flexible routing. Used by pro users.
@@ -1685,7 +1764,8 @@ Always build on the **oldest supported distribution**.
 **Developer Note:**
 JUCE abstractions handle this well. Just ensure you test with **PipeWire**, as it is the default on modern distros (Fedora 34+, Ubuntu 22.10+).
 
-### 4.5 Linux System Diagnostics Implementation
+### 4.5 Linux System Diagnostics Implementation
+*Agent ID: Gemini 3 pro*
 
 ```cpp
 // Source/Diagnostics/Platform/SystemDiagnostics_Linux.cpp
@@ -1725,13 +1805,15 @@ SystemDiagnostics::SystemInfo SystemDiagnostics::getSystemInfo()
 }
 ```
 
-### 4.6 Distribution-Specific Considerations
+### 4.6 Distribution-Specific Considerations
+*Agent ID: Gemini 3 pro*
 
 - **Ubuntu/Debian:** Use `.deb` packages. Standard locations: `/usr/lib/vst3`, `~/.vst3`.
 - **Arch/Manjaro:** Users expect an AUR package. You provide a `PKGBUILD` script that downloads your generic binary or builds from source.
 - **Fedora:** Use `.rpm`.
 
-### 4.7 Testing Matrix for Linux
+### 4.7 Testing Matrix for Linux
+*Agent ID: Gemini 3 pro*
 
 A comprehensive test plan for Linux release:
 
@@ -1745,18 +1827,21 @@ A comprehensive test plan for Linux release:
 
 ---
 
-## Chapter 5: Windows Development 🪟
+## Chapter 5: Windows Development 🪟
+*Agent ID: Gemini 3 pro*
 
 Windows is the largest market, but the most chaotic environment.
 
-### 5.1 Windows Audio Plugin Landscape
+### 5.1 Windows Audio Plugin Landscape
+*Agent ID: Gemini 3 pro*
 
 **Formats:**
 - **VST3:** Dominant.
 - **AAX:** Required for Pro Tools users. (Requires Avid license/approval).
 - **Standalone:** Useful for testing without a DAW.
 
-### 5.2 The DirectX Dependency Challenge
+### 5.2 The DirectX Dependency Challenge
+*Agent ID: Gemini 3 pro*
 
 JUCE defaults to software rendering or Direct2D.
 However, if you do custom OpenGL rendering, Windows drivers can be tricky.
@@ -1764,7 +1849,8 @@ However, if you do custom OpenGL rendering, Windows drivers can be tricky.
 More importantly, generic dependencies often assume DirectX runtimes are present.
 Fresh installations of Windows 10/11 usually have them, but "de-bloated" or "LTSC" versions might not.
 
-### 5.3 Visual C++ Runtime Hell
+### 5.3 Visual C++ Runtime Hell
+*Agent ID: Gemini 3 pro*
 
 This is the most common reason plugins fail to load.
 
@@ -1790,7 +1876,8 @@ If the user hasn't installed the "Microsoft Visual C++ Redistributable 2015-2022
 
 **Recommendation:** Just use **Static Linking**. The file size increase is negligible compared to the support cost of "Missing DLL" errors.
 
-### 5.4 DLL Dependency Management
+### 5.4 DLL Dependency Management
+*Agent ID: Gemini 3 pro*
 
 Use **Dependencies.exe** (modern rewrite of Dependency Walker) to check your built `.vst3` file.
 It creates a tree of all DLLs your plugin needs.
@@ -1800,7 +1887,8 @@ Ensure you are NOT accidentally linking to:
 - Debug runtimes (`ucrtbased.dll`, `vcruntime140d.dll`) in Release builds.
 - Absolute paths on your dev machine (`C:\Users\Indra\Libs\...`).
 
-### 5.5 Windows System Diagnostics Implementation
+### 5.5 Windows System Diagnostics Implementation
+*Agent ID: Gemini 3 pro*
 
 ```cpp
 // Source/Diagnostics/Platform/SystemDiagnostics_Windows.cpp
@@ -1838,7 +1926,8 @@ SystemDiagnostics::SystemInfo SystemDiagnostics::getSystemInfo()
 }
 ```
 
-### 5.6 Graphics Driver Issues
+### 5.6 Graphics Driver Issues
+*Agent ID: Gemini 3 pro*
 
 Windows offers seemingly infinite GPU combinations.
 Common issue: **Intel Integrated Graphics**.
@@ -1854,18 +1943,21 @@ bool GraphicsGuard::didCrashLastTime() {
 // Create marker on startup, delete on successful shutdown.
 ```
 
-### 5.7 Windows Version Compatibility
+### 5.7 Windows Version Compatibility
+*Agent ID: Gemini 3 pro*
 
 **Target:** Windows 10 (64-bit).
 Windows 7 is dead. Supporting it requires jumping through hurdles (older APIs, no modern C++ features). For an indie developer in 2026, dropping Windows 7/8 support is a valid business decision.
 
 ---
 
-## Chapter 6: macOS Development 🍎
+## Chapter 6: macOS Development 🍎
+*Agent ID: Gemini 3 pro*
 
 The "walled garden" is lovely once you are inside, but getting past the gatekeeper is expensive and complex.
 
-### 6.1 macOS Plugin Ecosystem
+### 6.1 macOS Plugin Ecosystem
+*Agent ID: Gemini 3 pro*
 
 **Formats:**
 - **AU (Audio Unit):** The native format (Logic Pro, GarageBand). **Mandatory.**
@@ -1879,7 +1971,8 @@ CMake handles this easily:
 set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64")
 ```
 
-### 6.2 Metal Graphics Subsystem
+### 6.2 Metal Graphics Subsystem
+*Agent ID: Gemini 3 pro*
 
 JUCE mostly uses CoreGraphics (CPU) or OpenGL (Legacy) on macOS.
 However, new JUCE versions leverage **Metal** for rendering the UI.
@@ -1887,12 +1980,14 @@ However, new JUCE versions leverage **Metal** for rendering the UI.
 **Pros:** Extremely smooth UI on Retina displays.
 **Cons:** Older Macs (pre-2015) might struggle or show artifacts if Metal logic isn't perfect.
 
-### 6.3 System Dependencies (The Easy Part)
+### 6.3 System Dependencies (The Easy Part)
+*Agent ID: Gemini 3 pro*
 
 macOS is monolithic. You rarely have "missing library" issues because system libraries (CoreAudio, CoreFoundation, Cocoa) are always there.
 Static linking (like with OpenSSL) is the standard approach for third-party libs.
 
-### 6.4 Code Signing Requirements (The Hard Part)
+### 6.4 Code Signing Requirements (The Hard Part)
+*Agent ID: Gemini 3 pro*
 
 If you distribute a plugin without signing it:
 1.  Logic Pro will refuse to load it.
@@ -1910,7 +2005,8 @@ codesign --force --deep --options runtime --timestamp \
 ```
 The `--options runtime` flag is critical. It enables the **Hardened Runtime**.
 
-### 6.5 Notarization Process
+### 6.5 Notarization Process
+*Agent ID: Gemini 3 pro*
 
 Signing proves *who* you are. Notarization proves *the file is safe*.
 You upload your plugin (zipped) to Apple's servers. They scan it. If it passes, you "staple" the ticket to your file.
@@ -1924,7 +2020,8 @@ You upload your plugin (zipped) to Apple's servers. They scan it. If it passes, 
 **Automation:**
 We will script this in **Chapter 14**.
 
-### 6.6 Hardened Runtime & Entitlements
+### 6.6 Hardened Runtime & Entitlements
+*Agent ID: Gemini 3 pro*
 
 The Hardened Runtime locks down your plugin (no JIT compilation, no microphone access, etc.) unless you explicitly ask for it.
 
@@ -1948,7 +2045,8 @@ For an audio plugin, you usually need:
 </plist>
 ```
 
-### 6.7 macOS System Diagnostics Implementation
+### 6.7 macOS System Diagnostics Implementation
+*Agent ID: Gemini 3 pro*
 
 ```cpp
 // Source/Diagnostics/Platform/SystemDiagnostics_Mac.mm
@@ -1979,7 +2077,8 @@ SystemDiagnostics::SystemInfo SystemDiagnostics::getSystemInfo()
 }
 ```
 
-### 6.8 Apple Silicon vs Intel Considerations
+### 6.8 Apple Silicon vs Intel Considerations
+*Agent ID: Gemini 3 pro*
 
 **Performance:**
 M1/M2 chips are beasts. DSP often runs 2-3x faster than on equivalent Intel Macs.
@@ -1993,17 +2092,21 @@ Always test your Universal Binary on:
 
 ---
 
-# Part III: Cross-Platform Strategies
+# Part III: Cross-Platform Strategies
+*Agent ID: Gemini 3 pro*
 
 ---
 
-## Chapter 7: JUCE Framework Deep Dive
+## Chapter 7: JUCE Framework Deep Dive
+*Agent ID: Gemini 3 pro*
 
-## Chapter 7: JUCE Framework Deep Dive 🧰
+## Chapter 7: JUCE Framework Deep Dive 🧰
+*Agent ID: Gemini 3 pro*
 
 To build truly cross-platform apps, we must lean heavily on JUCE's abstractions rather than raw OS calls.
 
-### 7.1 The JUCE Module System
+### 7.1 The JUCE Module System
+*Agent ID: Gemini 3 pro*
 
 JUCE is monolithic but modular. You don't verify if a file exists using `<fstream>` (which behaves differently on Windows/Linux regarding locked files); you use `juce::File`.
 
@@ -2017,7 +2120,8 @@ JUCE is monolithic but modular. You don't verify if a file exists using `<fstrea
 **Core Philosophy:**
 If a class exists in `juce_core` (like `juce::String` or `juce::Array`), prefer it over `std::` equivalents when interacting with other JUCE APIs. They are optimized to play together.
 
-### 7.2 The `juce::ValueTree` (The Soul)
+### 7.2 The `juce::ValueTree` (The Soul)
+*Agent ID: Gemini 3 pro*
 
 The `ValueTree` is the most important non-audio class in JUCE. It is a lightweight, recursive, reference-counted data structure that functions like a DOM (Document Object Model).
 
@@ -2038,7 +2142,8 @@ root.addChild(preset, -1, nullptr);
 root.addListener(this); 
 ```
 
-### 7.3 `AudioProcessor` vs `AudioProcessorEditor`
+### 7.3 `AudioProcessor` vs `AudioProcessorEditor`
+*Agent ID: Gemini 3 pro*
 
 The strict separation of concerns is mandatory.
 
@@ -2058,7 +2163,8 @@ The strict separation of concerns is mandatory.
 **The Golden Rule:**
 > If your plugin crashes when the UI is closed, you put logic in the Editor that belonged in the Processor.
 
-### 7.4 Smart Pointers in JUCE
+### 7.4 Smart Pointers in JUCE
+*Agent ID: Gemini 3 pro*
 
 Memory leaks in C++ are fatal.
 - `std::unique_ptr`: Use for objects you own exclusively (e.g., helper classes inside Processor).
@@ -2067,11 +2173,13 @@ Memory leaks in C++ are fatal.
 
 ---
 
-## Chapter 8: Managing State 💾
+## Chapter 8: Managing State 💾
+*Agent ID: Gemini 3 pro*
 
 State is the single hardest problem in plugin development. You have the DAW automation trying to change a value, the UI trying to change it, and the DSP reading it—all at once.
 
-### 8.1 The `AudioProcessorValueTreeState` (APVTS)
+### 8.1 The `AudioProcessorValueTreeState` (APVTS)
+*Agent ID: Gemini 3 pro*
 
 The APVTS is the standard solution. It binds the three worlds together:
 1.  **Parameters:** Exposed to the DAW.
@@ -2105,7 +2213,8 @@ juce::AudioProcessorValueTreeState::ParameterLayout
 }
 ```
 
-### 8.2 Thread Safety (The Atomic Reality)
+### 8.2 Thread Safety (The Atomic Reality)
+*Agent ID: Gemini 3 pro*
 
 The DSP `processBlock()` runs thousands of times per second. It cannot wait for a lock.
 The UI runs at 60fps.
@@ -2129,7 +2238,8 @@ gainParameter = apvts.getRawParameterValue("gain");
 float g = *gainParameter; // Fast, lock-free atomic read
 ```
 
-### 8.3 State Serialization
+### 8.3 State Serialization
+*Agent ID: Gemini 3 pro*
 
 When the user hits "Save" in the DAW, the DAW asks the plugin for a chunk of data.
 
@@ -2153,11 +2263,13 @@ void AnalogMorphV333AudioProcessor::setStateInformation (const void* data, int s
 
 ---
 
-## Chapter 9: The GUI Architecture 🎨
+## Chapter 9: The GUI Architecture 🎨
+*Agent ID: Gemini 3 pro*
 
 Building a GUI that looks identical on Windows (High Contrast mode scaling), macOS (Retina), and Linux (X11 weirdness) requires discipline.
 
-### 9.1 LookAndFeel Class
+### 9.1 LookAndFeel Class
+*Agent ID: Gemini 3 pro*
 
 JUCE draws generic widgets (sliders, buttons) by default. They look... functional.
 To brand your plugin ("ANMO V333"), you override the `juce::LookAndFeel_V4`.
@@ -2180,7 +2292,8 @@ public:
 };
 ```
 
-### 9.2 Responsive Design (FlexBox & Grid)
+### 9.2 Responsive Design (FlexBox & Grid)
+*Agent ID: Gemini 3 pro*
 
 Hardcoding pixels (`setBounds(10, 10, 100, 20)`) is fragile.
 Use `juce::FlexBox` (CSS logic in C++) for layout.
@@ -2201,7 +2314,8 @@ void MainComponent::resized() {
 ```
 **Benefit:** If the user drags the corner to resize the window, everything scales proportionally without math errors.
 
-### 9.3 Accessibility (The Forgotten Requirement)
+### 9.3 Accessibility (The Forgotten Requirement)
+*Agent ID: Gemini 3 pro*
 
 Screen readers (VoiceOver on Mac, Narrator on Windows) need help understanding your custom knobs.
 
@@ -2216,13 +2330,16 @@ This is not just for visually impaired users; it helps automation tools and test
 
 ---
 
-# Part IV: Application Lifecycle & CI/CD
+# Part IV: Application Lifecycle & CI/CD
+*Agent ID: Gemini 3 pro*
 
-## Chapter 10: The Build Pipeline 🛠️
+## Chapter 10: The Build Pipeline 🛠️
+*Agent ID: Gemini 3 pro*
 
 A professional plugin is not "Build -> Export" from an IDE. It is a scripted pipeline.
 
-### 10.1 CMake Presets
+### 10.1 CMake Presets
+*Agent ID: Gemini 3 pro*
 
 Stop typing long CMake commands. Use `CMakePresets.json` (introduced in CMake 3.19). This file lives in your root directory and defines your standard build configurations.
 
@@ -2268,7 +2385,8 @@ cmake --preset macos-release
 cmake --build --preset macos-release
 ```
 
-### 10.2 Semantic Versioning
+### 10.2 Semantic Versioning
+*Agent ID: Gemini 3 pro*
 
 Never hardcode version numbers in source code (`#define VERSION "1.0"`).
 Inject them via CMake.
@@ -2277,7 +2395,8 @@ Inject them via CMake.
 ```cmake
 project(ANMO_V333 VERSION 1.2.0 LANGUAGES C CXX)
 
-# Pass to CPP
+# Pass to CPP
+*Agent ID: Gemini 3 pro*
 target_compile_definitions(${PROJECT_NAME} PRIVATE
     JUCER_VERSION_STRING="${PROJECT_VERSION}"
 )
@@ -2287,11 +2406,13 @@ In your `PluginEditor.cpp`, you can now display `JUCER_VERSION_STRING` in your "
 
 ---
 
-## Chapter 11: Application Signing & Notarization (Automated) 🔐
+## Chapter 11: Application Signing & Notarization (Automated) 🔐
+*Agent ID: Gemini 3 pro*
 
 Manual signing is error-prone. We script it using Python or Bash.
 
-### 11.1 Windows: SignTool
+### 11.1 Windows: SignTool
+*Agent ID: Gemini 3 pro*
 
 You need a code signing certificate (EV or Standard).
 Tool: `signtool.exe` (from Windows SDK).
@@ -2304,7 +2425,8 @@ param($FilePath, $CertPath, $CertPass)
 ```
 *Note: The timestamp server (`/tr`) is crucial. It ensures the signature remains valid even after the certificate expires.*
 
-### 11.2 macOS: Notarization Script
+### 11.2 macOS: Notarization Script
+*Agent ID: Gemini 3 pro*
 
 **Bash Script (`scripts/notarize_mac.sh`):**
 ```bash
@@ -2312,26 +2434,32 @@ param($FilePath, $CertPath, $CertPass)
 PLUGIN_PATH="$1"
 ZIP_PATH="${PLUGIN_PATH}.zip"
 
-# 1. Sign
+# 1. Sign
+*Agent ID: Gemini 3 pro*
 codesign --force --deep --options runtime --timestamp --sign "Developer ID Application: Your Name" "$PLUGIN_PATH"
 
-# 2. Zip for upload
+# 2. Zip for upload
+*Agent ID: Gemini 3 pro*
 ditto -c -k --keepParent "$PLUGIN_PATH" "$ZIP_PATH"
 
-# 3. Submit
+# 3. Submit
+*Agent ID: Gemini 3 pro*
 xcrun notarytool submit "$ZIP_PATH" --keychain-profile "AC_PASSWORD" --wait
 
-# 4. Staple
+# 4. Staple
+*Agent ID: Gemini 3 pro*
 xcrun stapler staple "$PLUGIN_PATH"
 ```
 
 ---
 
-## Chapter 12: Installers and Updates 📦
+## Chapter 12: Installers and Updates 📦
+*Agent ID: Gemini 3 pro*
 
 Users do not want to drag-and-drop `.vst3` files.
 
-### 12.1 Windows: Inno Setup
+### 12.1 Windows: Inno Setup
+*Agent ID: Gemini 3 pro*
 
 Free, scriptable, standard.
 
@@ -2351,7 +2479,8 @@ Source: "..\..\Builds\Windows\x64\Release\VST3\ANMO V333.vst3"; DestDir: "{commo
 Name: "{group}\Uninstall ANMO V333"; Filename: "{uninstallexe}"
 ```
 
-### 12.2 macOS: pkgbuild
+### 12.2 macOS: pkgbuild
+*Agent ID: Gemini 3 pro*
 
 We need a `.pkg` installer.
 It involves two steps:
@@ -2359,14 +2488,17 @@ It involves two steps:
 2.  **Product Package:** Contains the UI and logic.
 
 ```bash
-# Create component
+# Create component
+*Agent ID: Gemini 3 pro*
 pkgbuild --root "Staging/" --identifier "com.indra.anmo.vst3" --version "1.2.0" --install-location "/Library/Audio/Plug-Ins/VST3" "component.pkg"
 
-# Create product (signed installer)
+# Create product (signed installer)
+*Agent ID: Gemini 3 pro*
 productbuild --distribution "distribution.xml" --sign "Developer ID Installer: Your Name" "ANMO_V333_Installer.pkg"
 ```
 
-### 12.3 Linux: DEB Packages
+### 12.3 Linux: DEB Packages
+*Agent ID: Gemini 3 pro*
 
 Basic Debian packaging structure:
 
@@ -2394,11 +2526,13 @@ Build command: `dpkg-deb --build AMNO-V333_1.2.0_amd64`
 
 ---
 
-## Chapter 13: Continuous Integration (GitHub Actions) 🤖
+## Chapter 13: Continuous Integration (GitHub Actions) 🤖
+*Agent ID: Gemini 3 pro*
 
 We need a robot to compile cleanly on all OSes for every commit.
 
-### 13.1 The Workflow File (`.github/workflows/build.yml`)
+### 13.1 The Workflow File (`.github/workflows/build.yml`)
+*Agent ID: Gemini 3 pro*
 
 This is a simplified "Matrix" build.
 
@@ -2451,7 +2585,8 @@ jobs:
           build/ANMO V333_artefacts/**/*.component
 ```
 
-### 13.2 Handling Secrets
+### 13.2 Handling Secrets
+*Agent ID: Gemini 3 pro*
 
 Never commit your signing certificates.
 Use **GitHub Secrets**:
@@ -2464,13 +2599,16 @@ In the CI workflow, decode these files to disk before the signing step, then del
 
 ---
 
-# Part V: Appendices & Reference
+# Part V: Appendices & Reference
+*Agent ID: Gemini 3 pro*
 
-## Appendix A: CMake Cheat Sheet for JUCE 📝
+## Appendix A: CMake Cheat Sheet for JUCE 📝
+*Agent ID: Gemini 3 pro*
 
 A quick reference for the most common commands used in `CMakeLists.txt` for audio plugins.
 
-### Adding a Plugin Target
+### Adding a Plugin Target
+*Agent ID: Gemini 3 pro*
 ```cmake
 juce_add_plugin(ANMO_V333
     COMPANY_NAME "IndraQubit"
@@ -2487,7 +2625,8 @@ juce_add_plugin(ANMO_V333
 )
 ```
 
-### Linking Modules
+### Linking Modules
+*Agent ID: Gemini 3 pro*
 ```cmake
 target_link_libraries(ANMO_V333
     PRIVATE
@@ -2499,7 +2638,8 @@ target_link_libraries(ANMO_V333
 )
 ```
 
-### Embedding Binary Assets
+### Embedding Binary Assets
+*Agent ID: Gemini 3 pro*
 Instead of `BinaryBuilder`:
 ```cmake
 juce_add_binary_data(Assets
@@ -2514,7 +2654,8 @@ target_link_libraries(ANMO_V333 PRIVATE Assets)
 
 ---
 
-## Appendix B: Common JUCE Assertions & Fixes 🐛
+## Appendix B: Common JUCE Assertions & Fixes 🐛
+*Agent ID: Gemini 3 pro*
 
 When you run in Debug mode, JUCE shouts at you via `jassert`.
 
@@ -2536,7 +2677,8 @@ When you run in Debug mode, JUCE shouts at you via `jassert`.
 
 ---
 
-## Appendix C: Recommended Reading 📚
+## Appendix C: Recommended Reading 📚
+*Agent ID: Gemini 3 pro*
 
 **DSP & Mathematics:**
 - *The Audio Programming Book* (Boulanger & Lazzarini)
@@ -2553,7 +2695,8 @@ When you run in Debug mode, JUCE shouts at you via `jassert`.
 
 ---
 
-# Epilogue
+# Epilogue
+*Agent ID: Gemini 3 pro*
 
 Cross-platform development is a journey of compromise and detailed obsession. By choosing JUCE and CMake, you have chosen the path of least resistance, but resistance remains.
 
@@ -2562,4 +2705,5 @@ Remember the golden rule: **The user doesn't care about your code. They care abo
 Build robustly. Test everywhere. Make noise.
 
 **-- indraqubit, January 2026**
+
 
