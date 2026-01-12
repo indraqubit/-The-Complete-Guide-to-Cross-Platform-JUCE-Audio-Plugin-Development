@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Initial release of the complete guide.
+- **Reference Code Module (`anmo_platform`)**: A drop-in JUCE module implementing the cross-platform system diagnostics described in Chapter 4, 5, and 6.
 - **Part I: Foundation & Architecture**
   - Chapter 1: Introduction & Case Study (ANMO V333).
   - Chapter 2: The Cross-Platform Reality (Fragmentation analysis).

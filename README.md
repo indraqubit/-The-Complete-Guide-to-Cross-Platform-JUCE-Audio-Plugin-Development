@@ -21,10 +21,29 @@ While the JUCE framework handles the audio and GUI abstraction beautifully, the 
 
 ```
 ├── The-Complete-Guide-to-Cross-Platform-JUCE-Audio-Plugin-Development.md  # Main Ebook File
+├── modules/                                                               # Drop-in Source Code
+│   └── anmo_platform/                                                     # Cross-Platform Diagnostics Module
 ├── CHANGELOG.md                                                           # Version History
 ├── LICENSE                                                                # CC BY-NC-SA 4.0
 ├── TAGS                                                                   # Search Keywords/Topics
 └── README.md                                                              # This file
+```
+
+## 🧩 Drop-in Code Module
+
+This repository includes **anmo_platform**, a ready-to-use JUCE module extracted from the book's case study. It handles the gritty details of system diagnostics across Windows, macOS, and Linux.
+
+### Usage
+
+**Option A: Projucer**
+1.  Open your `.jucer` project.
+2.  Go to **Modules** > **+** > **Add a module from a specified folder...**
+3.  Select the `modules/anmo_platform` directory from this repo.
+
+**Option B: CMake**
+```cmake
+add_subdirectory(path/to/repo/modules/anmo_platform)
+target_link_libraries(MyPlugin PRIVATE anmo_platform)
 ```
 
 ## 🛠 Topics Covered
